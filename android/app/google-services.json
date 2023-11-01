@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1063344238231",
+    "project_id": "loadmatch-order-app",
+    "storage_bucket": "loadmatch-order-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063344238231:android:cb1cdeca29711cc8f283d2",
+        "android_client_info": {
+          "package_name": "com.example.order_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_Ozr2GI8xGhZeCzVeCXwd2Z_VtnnUcIQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
