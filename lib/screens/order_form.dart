@@ -332,13 +332,15 @@ class _OrderFormState extends State<OrderForm> {
                 onPressed: () => _uploadPhoto(),
                 child: const Text('Upload Photo'),
               ),
-              ElevatedButton(
+              /*  ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
 
                     // Simulate the submission by printing the order data to the console
                     print("Order Data:");
+                    print("Order ID: $orderId");
+                    print("Timestamp: $timestamp");                    
                     print("Consignor Name: $consignorName");
                     print("Consignee Name: $consigneeName");
                     print("From Address: $fromAddress");
@@ -358,8 +360,6 @@ class _OrderFormState extends State<OrderForm> {
                     print("Loading Type: $loadingType");
                     print("Material Harnessing: $materialHarnessing");
 
-                    // Add 'Order ID' and 'Timestamp' fields here...
-
                     // Show a success message using SnackBar
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -371,6 +371,47 @@ class _OrderFormState extends State<OrderForm> {
                   }
                 },
                 child: const Text('Submit Locally'),
+              ),
+             */
+              ElevatedButton(
+                onPressed: () {
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+
+                    Map<String, dynamic> orderData = {
+                      'Timestamp': timestamp,
+                      'Order ID': orderId,
+                      'Consignor Name': consignorName,
+                      'Consignee Name': consigneeName,
+                      'From Address': fromAddress,
+                      'From Pincode': fromPincode,
+                      'To Address': toAddress,
+                      'To Pincode': toPincode,
+                      'Enquiry Type': enquiryType,
+                      'Material Dimensions': materialDimensions,
+                      'Expected Vehicle Length': expectedVehicleLength,
+                      'Material Type': materialType,
+                      'Vehicle Type': vehicleType,
+                      'Optional Photo URL': optionalPhotoURL,
+                      'Location Latitude': selectedLocation.latitude,
+                      'Location Longitude': selectedLocation.longitude,
+                      'Is Material Stackable': isMaterialStackable,
+                      'Loading Type': loadingType,
+                      'Material Harnessing': materialHarnessing,
+                    };
+
+                    // Store the data in Firebase Firestore
+                    _firestore.collection('orders').add(orderData);
+
+                    // Show a success message or navigate to a new screen
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Order submitted successfully!'),
+                      ),
+                    );
+                  }
+                },
+                child: const Text('Submit'),
               ),
             ],
           ),
