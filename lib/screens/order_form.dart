@@ -74,7 +74,7 @@ class _OrderFormState extends State<OrderForm> {
             children: [
               TextFormField(
                 decoration:
-                    const InputDecoration(labelText: 'Order ID'), // New field
+                    const InputDecoration(labelText: 'Order ID'), 
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the order ID';
@@ -87,7 +87,7 @@ class _OrderFormState extends State<OrderForm> {
               ),
               TextFormField(
                 decoration:
-                    const InputDecoration(labelText: 'Timestamp'), // New field
+                    const InputDecoration(labelText: 'Timestamp'), 
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'Please enter the timestamp';
