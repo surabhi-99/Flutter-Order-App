@@ -1,5 +1,3 @@
-// ignore_for_file: unused_field, avoid_print
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -19,7 +17,6 @@ class _OrderFormState extends State<OrderForm> {
   final _firestore = FirebaseFirestore.instance;
   final picker = ImagePicker();
 
-  String timestamp = '';
   String orderId = '';
   String consignorName = '';
   String consigneeName = '';
@@ -37,7 +34,7 @@ class _OrderFormState extends State<OrderForm> {
   bool isMaterialStackable = false;
   String loadingType = 'Type X';
   String optionalPhotoURL = '';
-  late LatLng selectedLocation;
+  LatLng selectedLocation = const LatLng(0, 0);
   String vehicleLoadCapacity = '';
 
   List<String> vehicleTypes = ['Car', 'Truck', 'Bike', 'Van'];
@@ -60,6 +57,40 @@ class _OrderFormState extends State<OrderForm> {
     }
   }
 
+  void _onSubmit() {
+    if (_formKey.currentState!.validate()) {
+      Map<String, dynamic> orderData = {
+        'Timestamp': DateTime.now().millisecondsSinceEpoch,
+        'Order ID': orderId,
+        'Consignor Name': consignorName,
+        'Consignee Name': consigneeName,
+        'From Address': fromAddress,
+        'From Pincode': fromPincode,
+        'To Address': toAddress,
+        'To Pincode': toPincode,
+        'Enquiry Type': enquiryType,
+        'Material Dimensions': materialDimensions,
+        'Expected Vehicle Length': expectedVehicleLength,
+        'Material Type': materialType,
+        'Vehicle Type': vehicleType,
+        'Optional Photo URL': optionalPhotoURL,
+        'Location Latitude': selectedLocation.latitude,
+        'Location Longitude': selectedLocation.longitude,
+        'Is Material Stackable': isMaterialStackable,
+        'Loading Type': loadingType,
+        'Material Harnessing': materialHarnessing,
+      };
+
+      _firestore.collection('orders').add(orderData);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Order submitted successfully!'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,31 +104,18 @@ class _OrderFormState extends State<OrderForm> {
           child: ListView(
             children: [
               TextFormField(
-                decoration:
-                    const InputDecoration(labelText: 'Order ID'), 
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the order ID';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  orderId = value!;
-                },
-              ),
-              TextFormField(
-                decoration:
-                    const InputDecoration(labelText: 'Timestamp'), 
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter the timestamp';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  timestamp = value!;
-                },
-              ),
+                  decoration: const InputDecoration(labelText: 'Order ID'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter the order ID';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    setState(() {
+                      orderId = value;
+                    });
+                  }),
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Consignor Name'),
                 validator: (value) {
@@ -106,8 +124,10 @@ class _OrderFormState extends State<OrderForm> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  consignorName = value!;
+                onChanged: (value) {
+                  setState(() {
+                    consignorName = value;
+                  });
                 },
               ),
               TextFormField(
@@ -118,8 +138,10 @@ class _OrderFormState extends State<OrderForm> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  consigneeName = value!;
+                onChanged: (value) {
+                  setState(() {
+                    consigneeName = value;
+                  });
                 },
               ),
               TextFormField(
@@ -130,8 +152,10 @@ class _OrderFormState extends State<OrderForm> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  fromAddress = value!;
+                onChanged: (value) {
+                  setState(() {
+                    fromAddress = value;
+                  });
                 },
               ),
               TextFormField(
@@ -142,8 +166,10 @@ class _OrderFormState extends State<OrderForm> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  fromPincode = value!;
+                onChanged: (value) {
+                  setState(() {
+                    fromPincode = value;
+                  });
                 },
               ),
               TextFormField(
@@ -154,8 +180,10 @@ class _OrderFormState extends State<OrderForm> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  toAddress = value!;
+                onChanged: (value) {
+                  setState(() {
+                    toAddress = value;
+                  });
                 },
               ),
               TextFormField(
@@ -166,13 +194,18 @@ class _OrderFormState extends State<OrderForm> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  toPincode = value!;
+                onChanged: (value) {
+                  setState(() {
+                    toPincode = value;
+                  });
                 },
               ),
+              const SizedBox(
+                height: 25,
+              ),
+              const Text('Enquiry Type:'),
               Row(
                 children: [
-                  const Text('Enquiry Type:'),
                   Radio<String>(
                     value: 'Type A',
                     groupValue: enquiryType,
@@ -204,8 +237,10 @@ class _OrderFormState extends State<OrderForm> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  materialDimensions = value!;
+                onChanged: (value) {
+                  setState(() {
+                    materialDimensions = value;
+                  });
                 },
               ),
               TextFormField(
@@ -216,8 +251,10 @@ class _OrderFormState extends State<OrderForm> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  materialWeight = double.parse(value!);
+                onChanged: (value) {
+                  setState(() {
+                    materialWeight = double.parse(value);
+                  });
                 },
               ),
               DropdownButtonFormField(
@@ -233,9 +270,12 @@ class _OrderFormState extends State<OrderForm> {
                 value: materialType,
                 decoration: const InputDecoration(labelText: 'Material Type'),
               ),
+              const SizedBox(
+                height: 25,
+              ),
+              const Text('Vehicle Load Capacity: '),
               Row(
                 children: [
-                  const Text('Vehicle Load Capacity: '),
                   for (var capacity in loadCapacities)
                     Row(
                       children: [
@@ -274,13 +314,18 @@ class _OrderFormState extends State<OrderForm> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  expectedVehicleLength = double.parse(value!);
+                onChanged: (value) {
+                  setState(() {
+                    expectedVehicleLength = double.parse(value);
+                  });
                 },
               ),
+              const SizedBox(
+                height: 25,
+              ),
+              const Text('Is Material Stackable: '),
               Row(
                 children: [
-                  const Text('Is Material Stackable: '),
                   Radio<bool>(
                     value: true,
                     groupValue: isMaterialStackable,
@@ -324,93 +369,51 @@ class _OrderFormState extends State<OrderForm> {
                   }
                   return null;
                 },
-                onSaved: (value) {
-                  materialHarnessing = value!;
+                onChanged: (value) {
+                  setState(() {
+                    materialHarnessing = value;
+                  });
                 },
               ),
-              ElevatedButton(
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Latitude'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Latitude';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  setState(() {
+                    selectedLocation =
+                        LatLng(double.parse(value), selectedLocation.longitude);
+                  });
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Longitude'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a Longitude';
+                  }
+                  return null;
+                },
+                onChanged: (value) {
+                  setState(() {
+                    selectedLocation =
+                        LatLng(selectedLocation.latitude, double.parse(value));
+                  });
+                },
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              OutlinedButton(
                 onPressed: () => _uploadPhoto(),
                 child: const Text('Upload Photo'),
               ),
-              /*  ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-
-                    // Simulate the submission by printing the order data to the console
-                    print("Order Data:");
-                    print("Order ID: $orderId");
-                    print("Timestamp: $timestamp");                    
-                    print("Consignor Name: $consignorName");
-                    print("Consignee Name: $consigneeName");
-                    print("From Address: $fromAddress");
-                    print("From Pincode: $fromPincode");
-                    print("To Address: $toAddress");
-                    print("To Pincode: $toPincode");
-                    print("Enquiry Type: $enquiryType");
-                    print("Material Dimensions: $materialDimensions");
-                    print("Material Weight: $materialWeight");
-                    print("Material Type: $materialType");
-                    print("Vehicle Type: $vehicleType");
-                    print("Expected Vehicle Length: $expectedVehicleLength");
-                    print("Optional Photo URL: $optionalPhotoURL");
-                    print("Location Latitude: ${selectedLocation.latitude}");
-                    print("Location Longitude: ${selectedLocation.longitude}");
-                    print("Is Material Stackable: $isMaterialStackable");
-                    print("Loading Type: $loadingType");
-                    print("Material Harnessing: $materialHarnessing");
-
-                    // Show a success message using SnackBar
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Order submitted locally!'),
-                        duration: Duration(
-                            seconds: 5), // Adjust the duration as needed
-                      ),
-                    );
-                  }
-                },
-                child: const Text('Submit Locally'),
-              ),
-             */
               ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    _formKey.currentState!.save();
-
-                    Map<String, dynamic> orderData = {
-                      'Timestamp': timestamp,
-                      'Order ID': orderId,
-                      'Consignor Name': consignorName,
-                      'Consignee Name': consigneeName,
-                      'From Address': fromAddress,
-                      'From Pincode': fromPincode,
-                      'To Address': toAddress,
-                      'To Pincode': toPincode,
-                      'Enquiry Type': enquiryType,
-                      'Material Dimensions': materialDimensions,
-                      'Expected Vehicle Length': expectedVehicleLength,
-                      'Material Type': materialType,
-                      'Vehicle Type': vehicleType,
-                      'Optional Photo URL': optionalPhotoURL,
-                      'Location Latitude': selectedLocation.latitude,
-                      'Location Longitude': selectedLocation.longitude,
-                      'Is Material Stackable': isMaterialStackable,
-                      'Loading Type': loadingType,
-                      'Material Harnessing': materialHarnessing,
-                    };
-
-                    // Store the data in Firebase Firestore
-                    _firestore.collection('orders').add(orderData);
-
-                    // Show a success message or navigate to a new screen
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Order submitted successfully!'),
-                      ),
-                    );
-                  }
-                },
+                onPressed: _onSubmit,
                 child: const Text('Submit'),
               ),
             ],
